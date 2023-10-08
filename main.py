@@ -255,14 +255,14 @@ class DatabaseCreator:
 
     def get_question(self, question_id: int) -> str:
         self.cursor.execute("SELECT question FROM questions WHERE id=?", (question_id,))
-        question = self.cursor.fetchall()
-        return question[0][0]
+        question = self.cursor.fetone()
+        return question[0]
 
     def get_answers(self, question_id: int) -> tuple:
         self.cursor.execute("SELECT answer_a, answer_b, answer_c, answer_d FROM answers WHERE question_id=?",
                             (question_id,))
-        answers = self.cursor.fetchall()
-        return answers[0]
+        answers = self.cursor.fetone()
+        return answers
 
     def display_table_content(self, table_name: str) -> str:
         """
