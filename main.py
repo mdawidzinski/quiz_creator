@@ -55,7 +55,10 @@ class DatabaseCreator:
         """
         Close connection to the database.
         """
+        self.cursor.close()
         self.conn.close()
+        self.cursor = None
+        self.conn = None
 
     def execute_operation(self) -> None:
         """
