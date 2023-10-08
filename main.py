@@ -291,4 +291,10 @@ class DatabaseCreator:
 
         :param table_name: "questions" or "answers"
         """
-        self.cursor.execute(f"TRUNCATE TABLE {table_name}")
+        self.cursor.execute(f"DROP TABLE {table_name}")
+
+        if table_name == "questions":
+            self.create_questions_table()
+        elif table_name == "answers":
+            self.create_answers_table()
+        self.execute_operation()
