@@ -254,11 +254,17 @@ class DatabaseCreator:
         self.execute_operation()
 
     def get_question(self, question_id: int) -> str:
+        """
+        Retrieve question from questions table.
+        """
         self.cursor.execute("SELECT question FROM questions WHERE id=?", (question_id,))
         question = self.cursor.fetone()
         return question[0]
 
     def get_answers(self, question_id: int) -> tuple:
+        """
+        Retrieve answers from answers table based on question_id.
+        """
         self.cursor.execute("SELECT answer_a, answer_b, answer_c, answer_d FROM answers WHERE question_id=?",
                             (question_id,))
         answers = self.cursor.fetone()
