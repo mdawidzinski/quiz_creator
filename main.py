@@ -105,7 +105,7 @@ class DatabaseCreator:
         Prompts the user for action confirmation.
         """
         while True:
-            answer = input(message).lower()
+            answer = input(message).lower().strip()
             if answer == "yes":
                 return True
             elif answer == "no":
