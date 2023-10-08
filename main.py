@@ -183,7 +183,8 @@ class DatabaseCreator:
 
         if answer_id:
             if not question_removed:
-                question_id = self.cursor.execute("SELECT question_id FROM answers WHERE id=(?)", (answer_id,))
+                self.cursor.execute("SELECT question_id FROM answers WHERE id=(?)", (answer_id,))
+                question_id = self.cursor.fetchone()[0]
             self.cursor.execute("DELETE FROM answers WHERE id=(?)", (answer_id,))
 
         self.execute_operation()
