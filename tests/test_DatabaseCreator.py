@@ -32,3 +32,17 @@ def test_table_creation(setup_database: DatabaseCreator, table_name: str) -> Non
     table = setup_database.cursor.fetchall()
     assert table is not None, f"Couldn't create {table_name} table"
 
+
+@pytest.mark.parametrize("table_name, table_columns", expected_columns.items())
+def test_table_schema(setup_database: DatabaseCreator, table_name: str, table_columns: list):
+    """
+    Test if the tables columns have proper names.
+    """
+    try:
+        setup_database.cursor.execute(f'PRAGMA table_info({table_name})')
+        columns_info = setup_database.cursor.fetchall()
+        column_names = [col[1] for col in columns_info]
+        assert column_names == table_columns, f'Columns name does not match for table {table_name}'
+    except Exception as e:
+        raise AssertionError(e)
+
