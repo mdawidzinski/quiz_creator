@@ -7,6 +7,11 @@ expected_columns = {
     "answers": ["id", "question_id", "answer_a", "answer_b", "answer_c", "answer_d"],
 }
 
+questions = ["question", "question1"]
+
+questions_id = [1, 2]
+answers = [["1", "2", "3", "4"], ["a", "b", "c", "d"]]
+
 
 def test_context_manager() -> None:
     """
@@ -45,4 +50,26 @@ def test_table_schema(setup_database: DatabaseCreator, table_name: str, table_co
         assert column_names == table_columns, f'Columns name does not match for table {table_name}'
     except Exception as e:
         raise AssertionError(e)
+
+
+@pytest.mark.parametrize("table_name", expected_columns)
+def test_table_clearing(setup_database: DatabaseCreator, table_name: str) -> None:
+    """
+    Test if 'clear_table' method works properly.
+    """
+    if table_name == "questions":
+        value = questions[0]
+        setup_database.cursor.execute(f"INSERT INTO {table_name} (question) VALUES (?)", (value,))
+        setup_database.execute_operation()
+    if table_name == "answers":
+        val = [questions_id[1]] + answers[0]
+        value = tuple(val)
+        setup_database.cursor.execute(f"INSERT INTO {table_name} (question_id, answer_a, answer_b, answer_c, answer_d)"
+                              f"VALUES (?, ?, ?, ?, ?)", value)
+        setup_database.execute_operation()
+
+    setup_database.clear_table(table_name)
+    setup_database.cursor.execute(f"SELECT * FROM {table_name}")
+    table = setup_database.cursor.fetchall()
+    assert table is not None, f"Table {table_name} is not empty. Got {table}"
 
