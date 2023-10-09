@@ -2,6 +2,11 @@ import pytest
 from main import DatabaseCreator
 from pathlib import Path
 
+expected_columns = {
+    "questions": ["id", "question"],
+    "answers": ["id", "question_id", "answer_a", "answer_b", "answer_c", "answer_d"],
+}
+
 
 def test_context_manager() -> None:
     """
@@ -16,4 +21,14 @@ def test_context_manager() -> None:
     else:
         assert db.cursor is None, "Cursor still active."
         assert db.conn is None, "Connection still open."
+
+
+@pytest.mark.parametrize("table_name", expected_columns.keys())
+def test_table_creation(setup_database: DatabaseCreator, table_name: str) -> None:
+    """
+    Smoke test to check if the tables are created within with statement.
+    """
+    setup_database.cursor.execute(f"SELECT * FROM {table_name}")
+    table = setup_database.cursor.fetchall()
+    assert table is not None, f"Couldn't create {table_name} table"
 
